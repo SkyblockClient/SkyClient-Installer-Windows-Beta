@@ -1,0 +1,67 @@
+﻿<UserControl x:Class="Skyclient.Views.RepoItemDetailsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Skyclient.Views"
+             mc:Ignorable="d"
+             d:DesignHeight="450" d:DesignWidth="800">
+    <Border x:Name="ControlBorder"
+            Background="{DynamicResource RepoItemBackgroundBrush}">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="250"/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="250"/>
+                <ColumnDefinition/>
+                <ColumnDefinition Width="50"/>
+            </Grid.ColumnDefinitions>
+
+            <Border CornerRadius="20" Style="{DynamicResource RepoItemIconRenderingBorder}" Height="250">
+                <Border.Background>
+                    <ImageBrush x:Name="RepoItemIcon" Stretch="Fill" ImageSource="/Views/forklift certified.png"/>
+                </Border.Background>
+            </Border>
+            <!--
+            <Image x:Name="RepoItemIcon" 
+                   Style="{DynamicResource RepoItemIconRendering}" 
+                   Source="/Views/forklift certified.png" 
+                   Height="250" 
+                   HorizontalAlignment="Left" VerticalAlignment="Top"/>-->
+
+            <Grid Grid.Column="1">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="40"/>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
+                <Label Grid.Column="0" x:Name="ItemDisplay" Style="{DynamicResource LabelRepoItemDisplay}" HorizontalAlignment="Left" VerticalAlignment="Bottom" Content="Mod Name"/>
+                <Label Grid.Column="1" x:Name="ItemAuthor" Style="{DynamicResource LabelRepoItemAuthors}" HorizontalAlignment="Left" VerticalAlignment="Bottom" Content="by Author"/>
+                <CheckBox x:Name="ItemEnabledCheckbox"
+                          Style="{DynamicResource CheckBoxSwitch}"
+                          Grid.Column="1" HorizontalAlignment="Right" Checked="ItemEnabledCheckbox_Checked" Unchecked="ItemEnabledCheckbox_Unchecked"/>
+                <TextBlock Grid.Column="0" x:Name="ItemDescription" Style="{DynamicResource LabelRepoItemDescription}" Margin="3,0,5,0" Grid.ColumnSpan="2" Grid.Row="2" Text="Prow scuttle parrel provost Sail ho shrouds spirits boom mizzenmast yardarm. Pinnace holystone mizzenmast quarter crow's nest nipperkin grog yardarm hempen halter furl. Swab barque interloper chantey doubloon starboard grog black jack gangway rutters."/>
+                    
+            </Grid>
+            
+            <Button x:Name="CloseViewButton"
+                    Style="{DynamicResource ButtonNoHoverVisualImageScaling}"
+                    Grid.Column="2"
+                    Margin="5"
+                    Click="CloseViewButton_Click" Height="40" VerticalAlignment="Top">
+                <Button.Background>
+                    <ImageBrush ImageSource="/Images/Textures/close.png"/>
+                </Button.Background>
+            </Button>
+            <Grid Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="3">
+                <ListBox x:Name="ItemActionsBox"
+                         Style="{DynamicResource ActionListBox}"/>
+            </Grid>
+        </Grid>
+    </Border>
+</UserControl>

@@ -1,0 +1,44 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net6.0-windows</TargetFramework>
+    <RootNamespace>Skyclient</RootNamespace>
+    <Nullable>enable</Nullable>
+    <UseWPF>true</UseWPF>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Images\icons\guide.png" />
+    <None Remove="Images\icons\invalid.png" />
+    <None Remove="Images\icons\phq dark overlay.png" />
+    <None Remove="Images\Textures\close.png" />
+    <None Remove="Images\Textures\mods.png" />
+    <None Remove="Images\Textures\packs.png" />
+    <None Remove="Views\forklift certified.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Images\icons\invalid.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Images\icons\guide.png" />
+    <Resource Include="Images\icons\phq dark overlay.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Images\Textures\close.png" />
+    <Resource Include="Images\Textures\mods.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Images\Textures\packs.png" />
+    <Resource Include="Views\forklift certified.png" />
+  </ItemGroup>
+
+</Project>
