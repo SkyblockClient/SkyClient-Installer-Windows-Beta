@@ -7,7 +7,7 @@
              mc:Ignorable="d" Height="128" Width="600"
              Margin="20" MouseDown="UserControl_MouseDown"
              >
-    <Border CornerRadius="20" Background="{DynamicResource RepoItemBackgroundBrush}">
+    <Border CornerRadius="10" Background="{DynamicResource RepoItemBackgroundBrush}">
         <Grid>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="128"/>
@@ -19,7 +19,7 @@
                 <RowDefinition/>
             </Grid.RowDefinitions>
 
-            <Border Grid.Column="0" CornerRadius="20,0,0,20" Grid.RowSpan="2" Style="{DynamicResource RepoItemIconRenderingBorder}">
+            <Border Grid.Column="0" CornerRadius="10,0,0,10" Grid.RowSpan="2" Style="{DynamicResource RepoItemIconRenderingBorder}">
                 <Border.Background>
                     <ImageBrush x:Name="ItemIcon" Stretch="Fill" ImageSource="/Views/forklift certified.png"/>
                 </Border.Background> 
