@@ -26,7 +26,7 @@
             </Border>
             <Label Grid.Column="1" x:Name="ItemDisplay" Style="{DynamicResource LabelRepoItemDisplay}" HorizontalAlignment="Left" VerticalAlignment="Bottom" Content="Mod Name"/>
             <Label Grid.Column="2" x:Name="ItemAuthor" Style="{DynamicResource LabelRepoItemAuthors}" HorizontalAlignment="Left" VerticalAlignment="Bottom" Content="by Author"/>
-            <TextBlock Margin="3,0,5,0" Grid.Column="1" Grid.ColumnSpan="2" Grid.Row="2" x:Name="ItemDescription" Style="{DynamicResource LabelRepoItemDescription}" Text="Prow scuttle parrel provost Sail ho shrouds spirits boom mizzenmast yardarm. Pinnace holystone mizzenmast quarter crow's nest nipperkin grog yardarm hempen halter furl. Swab barque interloper chantey doubloon starboard grog black jack gangway rutters."/>
+            <TextBlock Margin="5.4,0,5,0" Grid.Column="1" Grid.ColumnSpan="2" Grid.Row="2" x:Name="ItemDescription" Style="{DynamicResource LabelRepoItemDescription}" Text="Prow scuttle parrel provost Sail ho shrouds spirits boom mizzenmast yardarm. Pinnace holystone mizzenmast quarter crow's nest nipperkin grog yardarm hempen halter furl. Swab barque interloper chantey doubloon starboard grog black jack gangway rutters."/>
             <CheckBox x:Name="ItemEnabledCheckbox"
                       Style="{DynamicResource CheckBoxSwitch}"
                       Grid.Column="2" HorizontalAlignment="Right" Checked="ItemEnabledCheckbox_Checked" Unchecked="ItemEnabledCheckbox_Unchecked">
