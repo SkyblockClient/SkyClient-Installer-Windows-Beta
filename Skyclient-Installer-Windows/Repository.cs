@@ -369,7 +369,19 @@ namespace Skyclient
             }
         }
 
-        public record MightBeLookup(Pack Repopack, int Difference);
+        //public record MightBeLookup(Pack Repopack, int Difference);
+
+        public class MightBeLookup
+        {
+            public Pack Repopack;
+            public int Difference;
+
+            public MightBeLookup(Pack Repopack, int Difference)
+            {
+                this.Repopack = Repopack;
+                this.Difference = Difference;
+            }
+        }
 
         private bool CompareFileName(string localfile, string repofile, int distance = 6)
         {
