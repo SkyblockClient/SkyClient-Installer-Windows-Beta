@@ -231,6 +231,7 @@
     <Compile Include="ConfirmFirstInstallWindow.xaml.cs">
       <DependentUpon>ConfirmFirstInstallWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="DebugLogger.cs" />
     <Compile Include="DownloadableFile.cs" />
     <Compile Include="JsonParts\CommitsAPI.cs" />
     <Compile Include="JsonParts\McModInfo.cs" />
