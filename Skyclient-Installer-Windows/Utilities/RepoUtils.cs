@@ -79,40 +79,48 @@ namespace Skyclient.Utilities
         {
             void individualAction(RepoItem item)
             {
-                for (int i = 0; i < item.LocalFiles.Length; i++)
+                try
                 {
-                    var dest = Path.Combine(SkyclientDirectory, item.LocalFolderName, item.LocalFiles[i]);
-                    var df = new DownloadableFile(dest, item.DownloadLink);
-                    item.LocalFiles = new string[] { item.File };
-
-                    // in case it is queued
-                    Repository.Instance.RemoveFromDownloadQueue(df);
-
-                    // TODO: check file hash and termine if it should be sent to temp or removed
-                    if (File.Exists(dest))
+                    for (int i = 0; i < item.LocalFiles.Length; i++)
                     {
-                        Console.WriteLine("no file");
-                    }
+                        var dest = Path.Combine(SkyclientDirectory, item.LocalFolderName, item.LocalFiles[i]);
+                        var df = new DownloadableFile(dest, item.DownloadLink);
+                        item.LocalFiles = new string[] { item.File };
 
-                    if (!item.IsSetHash())
-                    {
-                        Console.WriteLine("no hash");
-                        File.Delete(dest);
-                        continue;
-                    }
+                        // in case it is queued
+                        Repository.Instance.RemoveFromDownloadQueue(df);
 
-                    var localhash = CalculateMD5(dest);
-                    Console.WriteLine(localhash);
-                    if (item.Hash == localhash)
-                    {
-                        Console.WriteLine("same hash");
-                        Repository.Instance.RemoveFile(df);
+                        // TODO: check file hash and termine if it should be sent to temp or removed
+                        if (File.Exists(dest))
+                        {
+                            Console.WriteLine("no file");
+                        }
+
+                        if (!item.IsSetHash())
+                        {
+                            Console.WriteLine("no hash");
+                            File.Delete(dest);
+                            continue;
+                        }
+
+                        var localhash = CalculateMD5(dest);
+                        Console.WriteLine(localhash);
+                        if (item.Hash == localhash)
+                        {
+                            Console.WriteLine("same hash");
+                            Repository.Instance.RemoveFile(df);
+                        }
+                        else
+                        {
+                            Console.WriteLine("different hash");
+                            File.Delete(dest);
+                        }
                     }
-                    else
-                    {
-                        Console.WriteLine("different hash");
-                        File.Delete(dest);
-                    }
+                }
+                catch (Exception e)
+                {
+                    e.Source = "RemoveRepoItem.individualAction:" + e.Source;
+                    DebugLogger.Log(e);
                 }
             }
 
@@ -163,36 +171,46 @@ namespace Skyclient.Utilities
                 var buffer = new byte[1];
                 //var buffer = new byte[4096];
                 File.WriteAllBytes(completepath, new byte[0]);
-                using (FileStream fs = new FileStream(completepath, FileMode.Append, FileAccess.Write))
+
+                try
                 {
-                    do
+                    using (FileStream fs = new FileStream(completepath, FileMode.Append, FileAccess.Write))
                     {
-                        if (file.CancelDownload)
+                        do
                         {
+                            if (file.CancelDownload)
+                            {
 #if DEBUG
-                            Console.Write("expected: " + expected);
-                            Console.Write(" - read: " + totalread);
-                            Console.WriteLine(" - written: " + totalwrote);
+                                Console.Write("expected: " + expected);
+                                Console.Write(" - read: " + totalread);
+                                Console.WriteLine(" - written: " + totalwrote);
 #endif
-                            fs.Close();
-                            response.Close();
+                                fs.Close();
+                                response.Close();
 
-                            PrepareCancelDownload(completepath, file);
-                            return null;
-                        }
+                                PrepareCancelDownload(completepath, file);
+                                return null;
+                            }
 
-                        read = response.Read(buffer, 0, buffer.Length);
-                        totalread += buffer.Length;
-                        totalwrote += read;
-                        await fs.WriteAsync(buffer, 0, read);
+                            read = response.Read(buffer, 0, buffer.Length);
+                            totalread += buffer.Length;
+                            totalwrote += read;
+                            await fs.WriteAsync(buffer, 0, read);
 
-                    } while (read == buffer.Length);
+                        } while (read == buffer.Length);
+                    }
+#if DEBUG
+                    Console.Write("expected: " + expected);
+                    Console.Write(" - read: " + totalread);
+                    Console.WriteLine(" - written: " + totalwrote);
+#endif
                 }
-#if DEBUG
-                Console.Write("expected: " + expected);
-                Console.Write(" - read: " + totalread);
-                Console.WriteLine(" - written: " + totalwrote);
-#endif
+                catch (Exception de)
+                {
+                    DebugLogger.Log(de);
+                    throw;
+                }
+
 
             }
             return completepath;
