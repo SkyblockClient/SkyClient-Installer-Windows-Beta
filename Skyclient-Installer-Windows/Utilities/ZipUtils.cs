@@ -12,7 +12,6 @@ namespace Skyclient.Utilities
 {
     public class ZipUtils
     {
-
         public static string? GetModIdFromJar(string jar)
         {
             try
@@ -35,8 +34,10 @@ namespace Skyclient.Utilities
                     }
                 }
             }
-            catch (Exception)
+            catch (Exception e)
             {
+                e.Source = "ZipUtils.GetModIdFromJar";
+                DebugLogger.Log(e);
                 Console.WriteLine("Failed to extract " + jar);
             }
             return null;
