@@ -137,10 +137,20 @@ namespace Skyclient
             var scmodsfolder = Path.Combine(userhome, ".minecraft", "skyclient", "mods");
             var scpackssfolder = Path.Combine(userhome, ".minecraft", "skyclient", "resourcepacks");
 
-            if (Directory.Exists(scmodsfolder))
+            //if (Directory.Exists(scmodsfolder))
             {
                 Console.WriteLine("Checking for local mods...");
-                var files = Directory.GetFiles(Path.Combine(userhome, ".minecraft", "skyclient", "mods"), "*.jar");
+                var files = new string[0];
+
+                try
+                {
+                    files = Directory.GetFiles(Path.Combine(userhome, ".minecraft", "skyclient", "mods"), "*.jar");
+                }
+                catch (Exception)
+                {
+                    DebugLogger.Log("mods folder not found or unable to read, " + (IsFirstInstall ? "" : "un") + "expected");
+                }
+
                 if (files.Length == 0)
                 {
                     Console.WriteLine("No mods found... Skipping.");
@@ -296,11 +306,20 @@ namespace Skyclient
                 }
             }
 
-            if (Directory.Exists(scpackssfolder))
+            //if (Directory.Exists(scpackssfolder))
             {
                 Console.WriteLine("Checking for local packs...");
-                var files = Directory.GetFiles(Path.Combine(userhome, ".minecraft", "skyclient", "resourcepacks"), "*.zip");
-                Console.WriteLine(files.Length);
+                var files = new string[0];
+
+                try
+                {
+                    files = Directory.GetFiles(Path.Combine(userhome, ".minecraft", "skyclient", "resourcepacks"), "*.zip");
+                }
+                catch (Exception)
+                {
+                    DebugLogger.Log("resourcepacks folder not found or unable to read, " + (IsFirstInstall ? "" : "un") + "expected");
+                }
+
                 if (files.Length == 0)
                 {
                     Console.WriteLine("No packs found... Skipping.");
