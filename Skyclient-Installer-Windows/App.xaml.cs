@@ -41,6 +41,16 @@ namespace Skyclient
             // check if first install
 
             var userhome = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+            try
+            {
+                Directory.CreateDirectory(Path.Combine(userhome, ".skyclient-temp"));
+            }
+            catch (Exception ee)
+            {
+                Console.WriteLine(ee.Source);
+                Console.WriteLine(ee.Message);
+                Console.WriteLine(ee.StackTrace);
+            }
 
             var scmodsfolder = Path.Combine(userhome, ".minecraft", "skyclient", "mods");
             var scpackssfolder = Path.Combine(userhome, ".minecraft", "skyclient", "resourcepacks");
