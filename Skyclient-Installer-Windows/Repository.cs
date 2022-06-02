@@ -382,6 +382,11 @@ namespace Skyclient
                             enable = true;
                         }
                         repopack.Enabled = enable;
+
+                        if (repopack.LocalFiles is null)
+                        {
+                            repopack.LocalFiles = new string[] { repopack.File };
+                        }
                     }
 
                 }
