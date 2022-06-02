@@ -39,7 +39,7 @@ namespace Skyclient
             File.WriteAllBytes(TotalFileName, new byte[0]);
         }
 
-        private static string Now => $"[{DateTime.Now.ToShortTimeString()}]";
+        private static string Now => $"[{DateTime.Now.ToString("yyyy-MM-dd HH-mm-ss")}]";
         private static string NowLine(string line) => $"{Now} {line}";
 
         public static void Log(string info)
