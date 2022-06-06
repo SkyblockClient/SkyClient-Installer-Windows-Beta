@@ -169,41 +169,38 @@ namespace Skyclient.Utilities
                 var totalread = 0;
                 var totalwrote = 0;
                 var buffer = new byte[1];
-                //var buffer = new byte[4096];
                 File.WriteAllBytes(completepath, new byte[0]);
+
+                var content = new List<byte[]>();
 
                 try
                 {
-                    using (FileStream fs = new FileStream(completepath, FileMode.Append, FileAccess.Write))
+                    do
                     {
-                        do
+                        if (file.CancelDownload)
                         {
-                            if (file.CancelDownload)
-                            {
-#if DEBUG
-                                Console.Write("expected: " + expected);
-                                Console.Write(" - read: " + totalread);
-                                Console.WriteLine(" - written: " + totalwrote);
-#endif
-                                fs.Close();
-                                response.Close();
+                            Console.WriteLine("Download canceled: ");
+                            Console.Write("expected: " + expected);
+                            Console.Write(" - read: " + totalread);
+                            Console.WriteLine(" - written: " + totalwrote);
 
-                                PrepareCancelDownload(completepath, file);
-                                return null;
-                            }
+                            response.Close();
 
-                            read = response.Read(buffer, 0, buffer.Length);
-                            totalread += buffer.Length;
-                            totalwrote += read;
-                            await fs.WriteAsync(buffer, 0, read);
+                            PrepareCancelDownload(completepath, file);
+                            return null;
+                        }
 
-                        } while (read == buffer.Length);
-                    }
-#if DEBUG
+                        read = response.Read(buffer, 0, buffer.Length);
+                        totalread += buffer.Length;
+                        totalwrote += read;
+
+                        content.Add(buffer.Clone() as byte[]);
+
+                    } while (read == buffer.Length);
+
                     Console.Write("expected: " + expected);
                     Console.Write(" - read: " + totalread);
                     Console.WriteLine(" - written: " + totalwrote);
-#endif
                 }
                 catch (Exception de)
                 {
@@ -211,7 +208,25 @@ namespace Skyclient.Utilities
                     throw;
                 }
 
+                FileStream fsc = null;
+                try
+                {
+                    using (FileStream fs = new FileStream(completepath, FileMode.Append, FileAccess.Write))
+                    {
+                        fsc = fs;
+                        foreach (var block in content)
+                        {
+                            fs.Write(block, 0, block.Length);
+                        }
+                        fs.Close();
+                    }
+                }
+                catch (Exception)
+                {
 
+                    throw;
+                }
+                fsc.Close();
             }
             return completepath;
         }
