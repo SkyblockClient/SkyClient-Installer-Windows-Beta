@@ -29,6 +29,7 @@ namespace Skyclient.Utilities
             var commitsMain = _DownloadFileString("https://api.github.com/repos/nacrt/SkyblockClient-REPO/commits/main");
             var mainSha = JsonConvert.DeserializeObject<CommitsAPI>(commitsMain);
             Console.WriteLine("Commit SHA: " + mainSha.Sha);
+            DebugLogger.Log("Commit SHA: " + mainSha.Sha);
             InternalLinkHost = $"https://cdn.jsdelivr.net/gh/nacrt/SkyblockClient-REPO@{mainSha.Sha}/files/";
         }
 
@@ -267,13 +268,21 @@ namespace Skyclient.Utilities
             }
         }
 
-        private static string _DownloadFileString(string address)
+        private static string? _DownloadFileString(string address)
         {
-            using (var wc = new WebClient()) // webclient because it allows syncronous downloads
+            try
             {
-                wc.Headers.Add(HttpRequestHeader.UserAgent, "curl/7.73.0"); // :weirdchamp:
-                return wc.DownloadString(address);
+                using (var wc = new WebClient()) // webclient because it allows syncronous downloads
+                {
+                    wc.Headers.Add(HttpRequestHeader.UserAgent, "curl/7.73.0"); // :weirdchamp:
+                    return wc.DownloadString(address);
+                }
             }
+            catch (Exception e)
+            {
+                DebugLogger.Log(e);
+            }
+            return "";
         }
 
         public static string DownloadRepoFileString(string file)

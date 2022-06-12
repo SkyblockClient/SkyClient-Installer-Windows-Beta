@@ -22,25 +22,37 @@ namespace Skyclient
 
         private static DebugLogger _instance;
 
+
         public string FileName;
         public string TotalFilePath;
         public string TotalFileName => Path.Combine(TotalFilePath, FileName);
 
+        private bool Instanced = false;
+
         private DebugLogger()
         {
-            var today = DateTime.Now.ToShortDateString();
-            var salt = new Random().Next(1000,10000).ToString();
-            FileName = $"debug {today}-{salt}.txt";
+            try
+            {
+                var salt = new Random().Next(1000, 10000).ToString();
+                FileName = $"debug {Now}---{salt}.txt";
 
-            var userhome = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-            TotalFilePath = Path.Combine(userhome, ".skyclient-temp", "logs");
+                var userhome = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+                TotalFilePath = Path.Combine(userhome, ".skyclient-temp", "logs");
 
-            Directory.CreateDirectory(TotalFilePath);
-            File.WriteAllBytes(TotalFileName, new byte[0]);
+                Directory.CreateDirectory(TotalFilePath);
+                File.WriteAllBytes(TotalFileName, new byte[0]);
+                Instanced = true;
+            }
+            catch (Exception)
+            {
+                Console.BackgroundColor = ConsoleColor.Red;
+                Console.WriteLine("FATAL ERROR CREATING LOG FILE");
+                Console.ResetColor();
+            }
         }
 
-        private static string Now => $"[{DateTime.Now.ToString("yyyy-MM-dd HH-mm-ss")}]";
-        private static string NowLine(string line) => $"{Now} {line}";
+        private static string Now => DateTime.Now.ToString("yyyy-MM-dd HH-mm-ss");
+        private static string NowLine(string line) => $"[{Now}] {line}";
 
         public static void Log(string info)
         {
