@@ -40,8 +40,38 @@ namespace Skyclient
 
             CurrentlyDownloadingFile = file;
             RemoveFromDownloadQueue(file, false);
+            string temppath = null;
+            try
+            {
+                temppath = await RepoUtils.DownloadTempFile(file);
+            }
+            catch (Exception e)
+            {
+                Exception filenameerror = null;
+                string filename = null;
+                try
+                {
+                    filename = Path.GetFileName(file.FileDestination);
+                }
+                catch (Exception e2)
+                {
+                    filenameerror = e2;
+                }
 
-            var temppath = await RepoUtils.DownloadTempFile(file);
+                if (filename is not null)
+                {
+                    Console.WriteLine(filename + " couldn't be downloaded, see logs for more detail.");
+                    DebugLogger.Log(e);
+                }
+                else
+                {
+                    Console.WriteLine("A file couldn't be downloaded, see logs for more detail.");
+                    Console.WriteLine("An additional error happened when getting the file name");
+                    DebugLogger.Log(e);
+                    DebugLogger.Log(filenameerror);
+                }
+            }
+
             if (temppath is not null)
             {
                 RepoUtils.MoveFile(temppath, file.FileDestination);

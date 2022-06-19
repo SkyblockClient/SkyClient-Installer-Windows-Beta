@@ -5,9 +5,12 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Skyclient"
         mc:Ignorable="d"
-        Title="ConfirmFirstInstallWindow" Height="450" Width="800">
-    <Grid>
-        <Label Content="You don't have Skyclient installed" HorizontalAlignment="Left" Margin="69,140,0,0" VerticalAlignment="Top"/>
-        <Button Content="Yes i want to install skyclient" HorizontalAlignment="Left" Margin="69,174,0,0" VerticalAlignment="Top" Click="Button_Click"/>
-    </Grid>
+        Title="Install Skyclient?" SizeToContent="WidthAndHeight">
+    <Border Background="{DynamicResource WindowBackgroundBrush}" MinHeight="88">
+        <Grid>
+            <Label Style="{DynamicResource LabelRepoItemDisplay}" Content="You don't have Skyclient installed" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top"/>
+            <Button Style="{DynamicResource ButtonNoHoverVisual}" BorderBrush="Red" BorderThickness="10" Content="Install skyclient" HorizontalAlignment="Left" Margin="10,52,0,0" VerticalAlignment="Top" Click="Button_Click"/>
+            <Button Style="{DynamicResource ButtonNoHoverVisual}" BorderBrush="Red" BorderThickness="10" Content="No Thanks" Margin="0,52,10,0" VerticalAlignment="Top" Click="Button_Click_1" HorizontalAlignment="Right" Width="56"/>
+        </Grid>
+    </Border>
 </Window>
