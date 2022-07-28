@@ -19,11 +19,21 @@
                 <RowDefinition/>
             </Grid.RowDefinitions>
 
+            
             <Border Grid.Column="0" CornerRadius="10,0,0,10" Grid.RowSpan="2" Style="{DynamicResource RepoItemIconRenderingBorder}">
                 <Border.Background>
                     <ImageBrush x:Name="ItemIcon" Stretch="Fill" ImageSource="/Views/forklift certified.png"/>
-                </Border.Background> 
+                </Border.Background>
             </Border>
+
+            <!--
+            <Border Grid.Column="0" CornerRadius="10,0,0,10" Grid.RowSpan="2" Style="{DynamicResource RepoItemIconRenderingBorder}">
+                <Border.Background>
+                    <ImageBrush x:Name="loadingAnimation" Stretch="Fill" ImageSource="/Images/Textures/loading.gif"/>
+                </Border.Background>
+            </Border>
+            -->
+            
             <Label Grid.Column="1" x:Name="ItemDisplay" Style="{DynamicResource LabelRepoItemDisplay}" HorizontalAlignment="Left" VerticalAlignment="Bottom" Content="Mod Name"/>
             <Label Grid.Column="2" x:Name="ItemAuthor" Style="{DynamicResource LabelRepoItemAuthors}" HorizontalAlignment="Left" VerticalAlignment="Bottom" Content="by Author"/>
             <TextBlock Margin="5.4,0,5,0" Grid.Column="1" Grid.ColumnSpan="2" Grid.Row="2" x:Name="ItemDescription" Style="{DynamicResource LabelRepoItemDescription}" Text="Prow scuttle parrel provost Sail ho shrouds spirits boom mizzenmast yardarm. Pinnace holystone mizzenmast quarter crow's nest nipperkin grog yardarm hempen halter furl. Swab barque interloper chantey doubloon starboard grog black jack gangway rutters."/>

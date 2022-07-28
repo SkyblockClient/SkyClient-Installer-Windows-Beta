@@ -35,7 +35,7 @@ namespace Skyclient
             EventUtils.RepoItemSelectedStateChange += EventUtils_RepoItemSelectedStateChange;
         }
 
-        private void EventUtils_RepoItemSelectedStateChange(RepoItem item, EventArgs e)
+        private async void EventUtils_RepoItemSelectedStateChange(RepoItem item, EventArgs e)
         {
             //Console.WriteLine(item.FolderName);
 

@@ -23,9 +23,9 @@ namespace Skyclient
 
 
         // this could be a list
-        private Dictionary<int, DownloadableFile> DownloadQueue = new Dictionary<int, DownloadableFile>();
+        private Dictionary<int, AbstractDownloadableFile> DownloadQueue = new Dictionary<int, AbstractDownloadableFile>();
         // will be null when no files are downloading
-        private DownloadableFile? CurrentlyDownloadingFile;
+        private AbstractDownloadableFile? CurrentlyDownloadingFile;
 
         private async void Download()
         {
@@ -36,14 +36,14 @@ namespace Skyclient
             if (queuesize == 0)
                 return;
 
-            DownloadableFile file = DownloadQueue[DownloadQueue.Keys.Last()];
+            AbstractDownloadableFile file = DownloadQueue[DownloadQueue.Keys.Last()];
 
             CurrentlyDownloadingFile = file;
             RemoveFromDownloadQueue(file, false);
             string temppath = null;
             try
             {
-                temppath = await RepoUtils.DownloadTempFile(file);
+                temppath = await file.Download();
             }
             catch (Exception e)
             {
@@ -99,13 +99,13 @@ namespace Skyclient
 
         public int GetDownloadQueueSize() { return DownloadQueue.Count; }
 
-        public void RemoveFile(DownloadableFile file)
+        public void RemoveFile(AbstractDownloadableFile file)
         {
             if (File.Exists(file.FileDestination))
-                RepoUtils.MoveFile(file.FileDestination, RepoUtils.GetTempFilePath(file));
+                RepoUtils.MoveFile(file.FileDestination, file.TempFileDestination);
         }
 
-        public void RemoveFromDownloadQueue(DownloadableFile file, bool setdownloadingfile = true)
+        public void RemoveFromDownloadQueue(AbstractDownloadableFile file, bool setdownloadingfile = true)
         {
             DownloadQueue.Remove(file.Guid);
             if (setdownloadingfile && CurrentlyDownloadingFile?.Guid == file.Guid)
@@ -115,11 +115,11 @@ namespace Skyclient
             }
         }
 
-        public void AddToDownloadQueue(DownloadableFile file)
+        public void AddToDownloadQueue(AbstractDownloadableFile file)
         {
             if (!DownloadQueue.ContainsKey(file.Guid))
             {
-                var tmp = RepoUtils.GetTempFilePath(file);
+                var tmp = file.TempFileDestination;
                 if (File.Exists(tmp))
                 {
                     RepoUtils.MoveFile(tmp, file.FileDestination);
@@ -160,12 +160,37 @@ namespace Skyclient
             Packs = packs.ToArray();
         }
 
+        public void PopulatePackageParents()
+        {
+            foreach (var mod in Mods)
+            {
+                foreach (var packageitem in mod.Packages)
+                {
+                    var packagemod = GetModByRepoID(packageitem);
+                    if (packagemod is null) continue;
+
+                    packagemod.PackageParents.Add(mod);
+                }
+            }
+
+            foreach (var pack in Packs)
+            {
+                foreach (var packageitem in pack.Packages)
+                {
+                    var packagepack = GetPackByRepoID(packageitem);
+                    if (packagepack is null) continue;
+
+                    packagepack.PackageParents.Add(pack);
+                }
+            }
+        }
+
         public void CheckSelectedItems()
         {
             var userhome = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
 
-            var scmodsfolder = Path.Combine(userhome, ".minecraft", "skyclient", "mods");
-            var scpackssfolder = Path.Combine(userhome, ".minecraft", "skyclient", "resourcepacks");
+            var scmodsfolder = Path.Combine(RepoUtils.SkyclientDirectory, "mods");
+            var scpackssfolder = Path.Combine(RepoUtils.SkyclientDirectory, "resourcepacks");
 
             //if (Directory.Exists(scmodsfolder))
             {
@@ -174,7 +199,7 @@ namespace Skyclient
 
                 try
                 {
-                    files = Directory.GetFiles(Path.Combine(userhome, ".minecraft", "skyclient", "mods"), "*.jar");
+                    files = Directory.GetFiles(Path.Combine(RepoUtils.SkyclientDirectory, "mods"), "*.jar");
                 }
                 catch (Exception)
                 {
@@ -343,7 +368,7 @@ namespace Skyclient
 
                 try
                 {
-                    files = Directory.GetFiles(Path.Combine(userhome, ".minecraft", "skyclient", "resourcepacks"), "*.zip");
+                    files = Directory.GetFiles(Path.Combine(RepoUtils.SkyclientDirectory, "resourcepacks"), "*.zip");
                 }
                 catch (Exception)
                 {

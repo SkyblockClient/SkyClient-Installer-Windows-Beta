@@ -1,13 +1,37 @@
 ﻿using Newtonsoft.Json;
 using Skyclient.Utilities;
+using System.Collections.Generic;
 using System.ComponentModel;
-
+using System.IO;
 namespace Skyclient.JsonParts
 {
-    public abstract class RepoItem
+    public abstract class RepoItem : AbstractDownloadableFile
     {
+        public override string FileDestination => LocalLocation;
+        public override string FileSource => DownloadLink;
+        public override string TempFileDestination => TempLocalLocation;
+
         public abstract string LocalFolderName { get; }
         public abstract string RepoFolderName { get; }
+
+        public override DownloadableFileStatus DownloadStatus
+        {
+            get { return _status; }
+            set
+            {
+                if (value != _status)
+                {
+                    var oldstatus = _status;
+                    _status = value;
+                    foreach (var parent in PackageParents)
+                    {
+                        parent.DownloadStatus = value;
+                    }
+                    InvokeDownloadStatusChanged();
+                }
+            }
+        }
+
         public string DownloadLink
         {
             get
@@ -18,8 +42,29 @@ namespace Skyclient.JsonParts
             }
         }
 
+        public string LocalLocation
+        {
+            get
+            {
+                return Path.Combine(RepoUtils.SkyclientDirectory, LocalFolderName, LocalFiles[0]);
+            }
+        }
+
+        public string TempLocalLocation
+        {
+            get
+            {
+                return Path.Combine(RepoUtils.SkyclientTempData, Guid.ToString() + "-" + Path.GetFileName(FileDestination));
+            }
+        }
+
+
+
         #region Non-Nullable 
         const string NON_NULLABLE = "NON-NULLABLE";
+
+        public List<RepoItem> PackageParents = new List<RepoItem>();
+
 
         [JsonProperty("id")]
         public string Id { get; set; } = NON_NULLABLE;

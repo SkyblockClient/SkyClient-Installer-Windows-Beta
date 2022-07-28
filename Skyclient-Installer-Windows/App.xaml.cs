@@ -43,7 +43,7 @@ namespace Skyclient
             var userhome = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
             try
             {
-                Directory.CreateDirectory(Path.Combine(userhome, ".skyclient-temp"));
+                Directory.CreateDirectory(RepoUtils.SkyclientTempData);
             }
             catch (Exception ee)
             {
@@ -52,20 +52,20 @@ namespace Skyclient
                 Console.WriteLine(ee.StackTrace);
             }
 
-            var scmodsfolder = Path.Combine(userhome, ".minecraft", "skyclient", "mods");
-            var scpackssfolder = Path.Combine(userhome, ".minecraft", "skyclient", "resourcepacks");
+            var scmodsfolder =   Path.Combine(RepoUtils.SkyclientDirectory, "mods");
+            var scpackssfolder = Path.Combine(RepoUtils.SkyclientDirectory, "resourcepacks");
 
             var modssize = 0;
             var packssize = 0;
 
             try
             {
-                modssize = Directory.GetFiles(Path.Combine(userhome, ".minecraft", "skyclient", "mods"), "*.jar").Length;
+                modssize = Directory.GetFiles(Path.Combine(RepoUtils.SkyclientDirectory, "mods"), "*.jar").Length;
             }
             catch (Exception) { }
             try
             {
-                packssize = Directory.GetFiles(Path.Combine(userhome, ".minecraft", "skyclient", "resourcepacks"), "*.zip").Length;
+                packssize = Directory.GetFiles(Path.Combine(RepoUtils.SkyclientDirectory, "resourcepacks"), "*.zip").Length;
             }
             catch (Exception) { }
 
@@ -79,8 +79,9 @@ namespace Skyclient
                 Repository.Instance.IsFirstInstall = allowFirstinstall ?? false;
             }
 
-
+            Repository.Instance.PopulatePackageParents();
             Repository.Instance.CheckSelectedItems();
+
             Console.WriteLine("Starting...");
             //new MainWindow().ShowDialog();
         }

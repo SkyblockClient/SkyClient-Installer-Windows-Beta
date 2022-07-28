@@ -29,12 +29,35 @@ namespace Skyclient.Views
 
             InitializeComponent();
             ViewUtilities.SetImage(ItemIcon, item);
-            ItemDisplay.Content = item.Display;
+
+
             ItemDescription.Text = item.Description;
             ItemEnabledCheckbox.IsChecked = item.Enabled;
-            ItemAuthor.Content = item.IsSetCreator() ? $"by {item.Creator}" : "";
 
+            item.DownloadStatusChanged += Item_DownloadStatusChanged;
             EventUtils.RepoItemSelectedStateChange += EventUtils_RepoItemSelectedStateChange;
+
+            SetDownloadStatus(DownloadableFileStatus.Idle);
+
+        }
+
+        private void Item_DownloadStatusChanged(object sender, EventArgs e)
+        {
+            SetDownloadStatus(Item.DownloadStatus);
+        }
+
+        private void SetDownloadStatus(DownloadableFileStatus status)
+        {
+            if (status == DownloadableFileStatus.Downloading)
+            {
+                ItemDisplay.Content = "Downloading...";
+                ItemAuthor.Content = "";
+            }
+            else
+            {
+                ItemDisplay.Content = Item.Display;
+                ItemAuthor.Content = Item.IsSetCreator() ? $"by {Item.Creator}" : "";
+            }
 
         }
 
@@ -53,6 +76,7 @@ namespace Skyclient.Views
 
         private void ItemEnabledCheckbox_Checked(object sender, RoutedEventArgs e)
         {
+            SetDownloadStatus(DownloadableFileStatus.Downloading);
             Item.SetEnabledStatus(true);
         }
 

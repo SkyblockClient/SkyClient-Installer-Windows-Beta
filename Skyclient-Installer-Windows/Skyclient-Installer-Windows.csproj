@@ -232,7 +232,7 @@
       <DependentUpon>ConfirmFirstInstallWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="DebugLogger.cs" />
-    <Compile Include="DownloadableFile.cs" />
+    <Compile Include="AbstractDownloadableFile.cs" />
     <Compile Include="JsonParts\CommitsAPI.cs" />
     <Compile Include="JsonParts\McModInfo.cs" />
     <Compile Include="JsonParts\Mod.cs" />
@@ -364,6 +364,7 @@
     <Resource Include="Images\Textures\close.png" />
     <Resource Include="Images\Textures\mods.png" />
     <Resource Include="Images\Textures\packs.png" />
+    <Resource Include="Images\Textures\loading.gif" />
     <Content Include="Properties\PublishProfiles\LinuxBuild.pubxml.user" />
     <Content Include="Properties\PublishProfiles\MacBuild.pubxml.user" />
     <Content Include="Properties\PublishProfiles\WindowsBuild.pubxml.user" />

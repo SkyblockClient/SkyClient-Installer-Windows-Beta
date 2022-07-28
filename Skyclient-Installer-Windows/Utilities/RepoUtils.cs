@@ -40,18 +40,19 @@ namespace Skyclient.Utilities
             DefaultValueHandling = DefaultValueHandling.IgnoreAndPopulate
         };
 
-        public static string GetTempFilePath(DownloadableFile file)
+        /*
+        public static string GetTempFilePath(AbstractDownloadableFile file)
         {
             var filename = Path.GetFileName(file.FileDestination);
             var guidfilename = file.Guid.ToString() + "-" + filename;
             var completepath = Path.Combine(SkyclientTempData, guidfilename);
             return completepath;
         }
+        */
 
         public static void AddRepoItemToQueue(RepoItem item)
         {
-            var dest = Path.Combine(SkyclientDirectory, item.LocalFolderName, item.File);
-            Repository.Instance.AddToDownloadQueue(new DownloadableFile(dest, item.DownloadLink));
+            Repository.Instance.AddToDownloadQueue(item);
 
             foreach (var package in item.Packages)
             {
@@ -59,8 +60,8 @@ namespace Skyclient.Utilities
                 if (packageitem is null)
                     continue;
 
-                dest = Path.Combine(SkyclientDirectory, packageitem.LocalFolderName, packageitem.File);
-                Repository.Instance.AddToDownloadQueue(new DownloadableFile(dest, packageitem.DownloadLink));
+                //dest = Path.Combine(SkyclientDirectory, packageitem.LocalFolderName, packageitem.File);
+                Repository.Instance.AddToDownloadQueue(packageitem);
             }
         }
 
@@ -85,11 +86,10 @@ namespace Skyclient.Utilities
                     for (int i = 0; i < item.LocalFiles.Length; i++)
                     {
                         var dest = Path.Combine(SkyclientDirectory, item.LocalFolderName, item.LocalFiles[i]);
-                        var df = new DownloadableFile(dest, item.DownloadLink);
                         item.LocalFiles = new string[] { item.File };
 
                         // in case it is queued
-                        Repository.Instance.RemoveFromDownloadQueue(df);
+                        Repository.Instance.RemoveFromDownloadQueue(item);
 
                         // TODO: check file hash and termine if it should be sent to temp or removed
                         if (File.Exists(dest))
@@ -109,7 +109,7 @@ namespace Skyclient.Utilities
                         if (item.Hash == localhash)
                         {
                             Console.WriteLine("same hash");
-                            Repository.Instance.RemoveFile(df);
+                            Repository.Instance.RemoveFile(item);
                         }
                         else
                         {
@@ -133,35 +133,40 @@ namespace Skyclient.Utilities
                 if (packageitem is null)
                     continue;
 
+                individualAction(packageitem);
+
+                /*
                 for (int i = 0; i < packageitem.LocalFiles.Length; i++)
                 {
-                    var dest = Path.Combine(SkyclientDirectory, packageitem.LocalFolderName, packageitem.LocalFiles[i]);
-                    var df = new DownloadableFile(dest, packageitem.DownloadLink);
 
-                    Repository.Instance.RemoveFromDownloadQueue(df);
-                    Repository.Instance.RemoveFile(df);
+                    Repository.Instance.RemoveFromDownloadQueue(packageitem);
+                    Repository.Instance.RemoveFile(packageitem);
                 }
-
+                */
             }
         }
 
         // returns full unique file path
         // e.g. C:/[...]/Roaming/.skyclient-temp/-51451681-itlt-1.8.8-9-1.0.1.jar
         // returns null when download was canceled or error
-        public static async Task<string?> DownloadTempFile(DownloadableFile file)
+        public static async Task<string?> DownloadTempFile(AbstractDownloadableFile file)
         {
-            var completepath = GetTempFilePath(file);
+            var completepath = file.TempFileDestination;
 
             HttpClient client = new HttpClient();
             client.DefaultRequestHeaders.Add("User-Agent", "curl/7.73.0");
 #if DEBUG
             Console.WriteLine("Download link: " + file.FileSource);
 #endif
+
+            file.DownloadStatus = DownloadableFileStatus.Downloading;
+
             using (var response = await client.GetStreamAsync(file.FileSource))
             {
                 if (file.CancelDownload)
                 {
                     PrepareCancelDownload(completepath, file);
+                    file.DownloadStatus = DownloadableFileStatus.Idle;
                     return null;
                 }
                 var read = 0;
@@ -188,6 +193,7 @@ namespace Skyclient.Utilities
                             response.Close();
 
                             PrepareCancelDownload(completepath, file);
+                            file.DownloadStatus = DownloadableFileStatus.Idle;
                             return null;
                         }
 
@@ -206,14 +212,17 @@ namespace Skyclient.Utilities
                 catch (Exception de)
                 {
                     DebugLogger.Log(de);
-                    throw;
+                    file.DownloadStatus = DownloadableFileStatus.Idle;
+                    throw new Exception("Unexpected Error Downloading or writing file", de);
                 }
+                file.DownloadStatus = DownloadableFileStatus.Idle;
 
                 FileStream fsc = null;
                 try
                 {
                     using (FileStream fs = new FileStream(completepath, FileMode.Append, FileAccess.Write))
                     {
+
                         fsc = fs;
                         foreach (var block in content)
                         {
@@ -224,7 +233,6 @@ namespace Skyclient.Utilities
                 }
                 catch (Exception)
                 {
-
                     throw;
                 }
                 fsc.Close();
@@ -232,7 +240,7 @@ namespace Skyclient.Utilities
             return completepath;
         }
 
-        private static void PrepareCancelDownload(string completepath, DownloadableFile file)
+        private static void PrepareCancelDownload(string completepath, AbstractDownloadableFile file)
         {
             Console.ForegroundColor = ConsoleColor.Red;
             Console.WriteLine("Canceled download: " + Path.GetFileName(file.FileDestination));
