@@ -35,20 +35,28 @@ namespace Skyclient
 
         private void AddProfile()
         {
-            var launcherProfilesJson = Path.Combine(RepoUtils.DotMinecraftDirectory, "launcher_profiles.json");
-            var jsonText = File.ReadAllText(launcherProfilesJson);
-            var json = JsonConvert.DeserializeObject<LauncherProfilesFileJson>(jsonText);
-
-            var contains = json.profiles.ContainsKey("skyclient");
-            while (!contains)
+            try
             {
-                Console.WriteLine("Creating profile...");
-                json.profiles.Add("skyclient", LauncherProfileJson.Create());
-                File.WriteAllText(launcherProfilesJson, JsonConvert.SerializeObject(json, Formatting.Indented));
-                Thread.Sleep(500);
-                jsonText = File.ReadAllText(launcherProfilesJson);
-                json = JsonConvert.DeserializeObject<LauncherProfilesFileJson>(jsonText);
-                contains = json.profiles.ContainsKey("skyclient");
+                var launcherProfilesJson = Path.Combine(RepoUtils.DotMinecraftDirectory, "launcher_profiles.json");
+                var jsonText = File.ReadAllText(launcherProfilesJson);
+                var json = JsonConvert.DeserializeObject<LauncherProfilesFileJson>(jsonText);
+
+                var contains = json.profiles.ContainsKey("skyclient");
+                while (!contains)
+                {
+                    Console.WriteLine("Creating profile...");
+                    json.profiles.Add("skyclient", LauncherProfileJson.Create());
+                    File.WriteAllText(launcherProfilesJson, JsonConvert.SerializeObject(json, Formatting.Indented));
+                    Thread.Sleep(500);
+                    jsonText = File.ReadAllText(launcherProfilesJson);
+                    json = JsonConvert.DeserializeObject<LauncherProfilesFileJson>(jsonText);
+                    contains = json.profiles.ContainsKey("skyclient");
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+                Console.WriteLine(e.StackTrace);
             }
         }
     }

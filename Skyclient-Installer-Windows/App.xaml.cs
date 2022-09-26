@@ -69,11 +69,21 @@ namespace Skyclient
             }
             catch (Exception) { }
 
-            var launcherProfilesJson = Path.Combine(RepoUtils.DotMinecraftDirectory, "launcher_profiles.json");
-            var jsonText = File.ReadAllText(launcherProfilesJson);
-            var json = JsonConvert.DeserializeObject<LauncherProfilesFileJson>(jsonText);
+            var containsSkyclient = false;
+            try
+            {
+                var launcherProfilesJson = Path.Combine(RepoUtils.DotMinecraftDirectory, "launcher_profiles.json");
+                var jsonText = File.ReadAllText(launcherProfilesJson);
+                var json = JsonConvert.DeserializeObject<LauncherProfilesFileJson>(jsonText);
+                containsSkyclient = json.profiles.ContainsKey("skyclient");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                Console.WriteLine(ex.StackTrace);
+            }
 
-            var firstinstall = (packssize == 0 && modssize == 0) || (!json.profiles.ContainsKey("skyclient"));
+            var firstinstall = (packssize == 0 && modssize == 0) || !containsSkyclient;
 
             if (firstinstall)
             {
