@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -29,6 +30,7 @@ namespace Skyclient
         {
             Instance = this;
             InitializeComponent();
+
             RepoViewMods.RepoItems = Repository.Instance.GetVisibleMods();
             RepoViewPacks.RepoItems = Repository.Instance.GetVisiblePacks();
 

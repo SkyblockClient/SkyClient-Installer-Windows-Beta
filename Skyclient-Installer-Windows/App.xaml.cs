@@ -1,4 +1,5 @@
-﻿using Skyclient.JsonParts;
+﻿using Newtonsoft.Json;
+using Skyclient.JsonParts;
 using Skyclient.Utilities;
 using System;
 using System.Collections;
@@ -20,7 +21,6 @@ namespace Skyclient
     public partial class App : Application
     {
         public static bool Close = false;
-
         public static string[] StartArgs { get; set; } = new string[0];
 
         void AppStartup(object sender, StartupEventArgs e)
@@ -69,7 +69,11 @@ namespace Skyclient
             }
             catch (Exception) { }
 
-            var firstinstall = packssize == 0 && modssize == 0;
+            var launcherProfilesJson = Path.Combine(RepoUtils.DotMinecraftDirectory, "launcher_profiles.json");
+            var jsonText = File.ReadAllText(launcherProfilesJson);
+            var json = JsonConvert.DeserializeObject<LauncherProfilesFileJson>(jsonText);
+
+            var firstinstall = (packssize == 0 && modssize == 0) || (!json.profiles.ContainsKey("skyclient"));
 
             if (firstinstall)
             {

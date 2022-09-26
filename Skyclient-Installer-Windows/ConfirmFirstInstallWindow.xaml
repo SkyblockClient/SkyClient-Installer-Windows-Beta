@@ -9,8 +9,8 @@
     <Border Background="{DynamicResource WindowBackgroundBrush}" MinHeight="88">
         <Grid>
             <Label Style="{DynamicResource LabelRepoItemDisplay}" Content="You don't have Skyclient installed" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top"/>
-            <Button Style="{DynamicResource ButtonNoHoverVisual}" BorderBrush="Red" BorderThickness="10" Content="Install skyclient" HorizontalAlignment="Left" Margin="10,52,0,0" VerticalAlignment="Top" Click="Button_Click"/>
-            <Button Style="{DynamicResource ButtonNoHoverVisual}" BorderBrush="Red" BorderThickness="10" Content="No Thanks" Margin="0,52,10,0" VerticalAlignment="Top" Click="Button_Click_1" HorizontalAlignment="Right" Width="56"/>
+            <Button Style="{DynamicResource ButtonNoHoverVisual}" BorderBrush="Red" BorderThickness="10" Content="Install skyclient" HorizontalAlignment="Left" Margin="10,52,0,0" VerticalAlignment="Top" Click="AcceptInstall"/>
+            <Button Style="{DynamicResource ButtonNoHoverVisual}" BorderBrush="Red" BorderThickness="10" Content="No Thanks" Margin="0,52,10,0" VerticalAlignment="Top" Click="DenyInstall" HorizontalAlignment="Right" Width="56"/>
         </Grid>
     </Border>
 </Window>

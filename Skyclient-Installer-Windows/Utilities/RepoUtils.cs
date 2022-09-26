@@ -18,12 +18,14 @@ namespace Skyclient.Utilities
 
         public static string SkyclientTempData = "";
 
+        public static string DotMinecraftDirectory = "";
         public static string SkyclientDirectory = "";
 
         public static void Initialize()
         {
             var appdata = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-            SkyclientDirectory = Path.Combine(appdata, ".minecraft", "skyclient");
+            DotMinecraftDirectory = Path.Combine(appdata, ".minecraft");
+            SkyclientDirectory = Path.Combine(DotMinecraftDirectory, "skyclient");
             SkyclientTempData = Path.Combine(appdata, ".skyclient-temp");
 
             var commitsMain = _DownloadFileString("https://api.github.com/repos/nacrt/SkyblockClient-REPO/commits/main");
