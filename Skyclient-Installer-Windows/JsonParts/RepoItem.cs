@@ -98,7 +98,23 @@ namespace Skyclient.JsonParts
         #endregion
 
         #region Nullable
-        public string[] LocalFiles { get; set; }
+        public string[] LocalFiles
+        {
+            get
+            {
+                if(_LocalFiles is null)
+                {
+                    _LocalFiles = new string[] { File };
+                }
+                return _LocalFiles;
+            }
+            set
+            {
+                _LocalFiles = value;
+            }
+        }
+
+        private string[] _LocalFiles;
 
         [JsonProperty("hash")]
         public string Hash { get; set; }
