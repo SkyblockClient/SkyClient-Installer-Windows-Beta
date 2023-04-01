@@ -13,8 +13,8 @@ namespace Skyclient.Utilities
 {
     public class RepoUtils
     {
-        public static string InternalLinkHost = "https://cdn.jsdelivr.net/gh/nacrt/SkyblockClient-REPO@main/files/";
-        public static string InternalLinkCdn = "https://raw.githubusercontent.com/nacrt/SkyblockClient-REPO/main/files/";
+        public static string InternalLinkHost = "https://cdn.jsdelivr.net/gh/SkyblockClient/SkyblockClient-REPO@main/files/";
+        public static string InternalLinkCdn = "https://raw.githubusercontent.com/SkyblockClient/SkyblockClient-REPO/main/files/";
 
         public static string SkyclientTempData = "";
 
@@ -28,11 +28,11 @@ namespace Skyclient.Utilities
             SkyclientDirectory = Path.Combine(DotMinecraftDirectory, "skyclient");
             SkyclientTempData = Path.Combine(appdata, ".skyclient-temp");
 
-            var commitsMain = _DownloadFileString("https://api.github.com/repos/nacrt/SkyblockClient-REPO/commits/main");
+            var commitsMain = _DownloadFileString("https://api.github.com/repos/SkyblockClient/SkyblockClient-REPO/commits/main");
             var mainSha = JsonConvert.DeserializeObject<CommitsAPI>(commitsMain);
             Console.WriteLine("Commit SHA: " + mainSha.Sha);
             DebugLogger.Log("Commit SHA: " + mainSha.Sha);
-            InternalLinkHost = $"https://cdn.jsdelivr.net/gh/nacrt/SkyblockClient-REPO@{mainSha.Sha}/files/";
+            InternalLinkHost = $"https://cdn.jsdelivr.net/gh/SkyblockClient/SkyblockClient-REPO@{mainSha.Sha}/files/";
         }
 
         public static JsonSerializerSettings JsonSerializerSettings => new JsonSerializerSettings
