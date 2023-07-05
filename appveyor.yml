@@ -1,19 +1,21 @@
-version: "{build}"
-
-pull_requests:
-  do_not_increment_build_number: true
-  
-branches:
-  only:
-  - main
-
-shallow_clone: true
 
 image: Visual Studio 2019
 
+before_build:
+  - ps: |
+      if ($env:APPVEYOR_REPO_TAG -eq "true") {
+          # $env:SIGNPATH_SIGNING_POLICY = "release-signing"
+          $env:BUILD_CONFIG = "Release"
+      } else {
+          # $env:SIGNPATH_SIGNING_POLICY = "test-signing"
+          $env:BUILD_CONFIG = "Debug"
+      }
+      # Write-Host "Set SIGNPATH_SIGNING_POLICY to $($env:SIGNPATH_SIGNING_POLICY)"
+      Write-Host "Set BUILD_CONFIG to $($env:BUILD_CONFIG)"
+
 build_script:
   - cmd: nuget restore
-  - cmd: msbuild /p:Configuration=Debug /p:Platform="Any CPU"
+  - cmd: msbuild /p:Configuration=%BUILD_CONFIG% /p:Platform="Any CPU"
 
 test: off
 
@@ -23,4 +25,5 @@ cache:
   - '%LocalAppData%\NuGet\v3-cache'
 
 artifacts:
-  - path: 'Skyclient-Installer-Windows\bin\Release\*.exe'
+  - path: 'Skyclient-Installer-Windows\bin\%BUILD_CONFIG%\*.exe'
+
